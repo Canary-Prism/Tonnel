@@ -11,6 +11,9 @@ to use:
 java -jar --enable-preview <the file>
 ```
 
+you can add `--auto` as an option and it will click for you
+
+
 ### [Download](https://github.com/Canary-Prism/Tonnel/releases/)
 
 I'm assuming you know how to use GitHub. If not then here:
@@ -32,6 +35,9 @@ This program uses Java 22 with preview features bc i'm weird like that
 
 
 ## Historical Changelog
+
+### 0.2.0
+- added the `--auto` option
 
 ### 0.1.0
 - made the thing
