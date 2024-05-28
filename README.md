@@ -36,6 +36,9 @@ This program uses Java 22 with preview features bc i'm weird like that
 
 ## Historical Changelog
 
+### 0.2.1
+- timing adjustments
+
 ### 0.2.0
 - added the `--auto` option
 
