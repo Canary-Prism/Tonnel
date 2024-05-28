@@ -118,7 +118,7 @@ public class Tunnel {
             switch (i) {
                 case 0 -> view.startScoreScroll(20);
                 case 1 -> score_conductor.start(0);
-                case 7 -> input_handler.start(Math.round(60_000d / music.bpm()) - 60);
+                case 7 -> input_handler.start(Math.round(60_000d / music.bpm()));
             }
         });
 

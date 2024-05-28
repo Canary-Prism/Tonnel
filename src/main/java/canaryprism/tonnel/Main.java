@@ -27,7 +27,7 @@ public class Main {
 
         var intro = new Music(
             new AudioPlayer(Tunnel.getResource("/tonnel_assets/music/tunnel_start.wav"), 1),
-            755,
+            740,
             102,
             8
         );
