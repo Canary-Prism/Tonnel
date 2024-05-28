@@ -81,7 +81,9 @@ public class Tunnel {
                 } else {
                     voice_two.play();
                 }
-            } 
+            } else if (auto) {
+                playerInput();
+            }
         });
 
         conductor.submit((e) -> {
@@ -139,6 +141,12 @@ public class Tunnel {
     
     private volatile int score = 0;
     private volatile int highscore = 0;
+
+    private volatile boolean auto = false;
+
+    public void setAuto(boolean auto) {
+        this.auto = auto;
+    }
 
     public void setHighScore(int highscore) {
         this.highscore = highscore;

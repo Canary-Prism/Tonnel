@@ -13,6 +13,16 @@ import canaryprism.audio.Music;
  *
  */
 public class Main {
+
+    static boolean hasArg(String[] args, String key) {
+        for (int i = args.length - 1; i >= 0; i--) {
+            if (args[i].equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
 
         var intro = new Music(
@@ -52,8 +62,13 @@ public class Main {
 
         var tunnel = new Tunnel(frame, intro, (long)(60_000d * 17.5 / 204) - 40, 8, music, "/tonnel_assets/sprites", "/tonnel_assets/audio");
         tunnel.setHighScore(high_score);
+        if (hasArg(args, "--auto")) {
+            tunnel.setAuto(true);
+        }
 
         var score = tunnel.start().join();
+
+
 
         if (score > high_score) {
             write(working_directory, score);
