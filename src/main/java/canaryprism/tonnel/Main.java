@@ -26,13 +26,13 @@ public class Main {
 
     public static void main(String[] args) {
 
-        var kyuukurarin = new Music(
-            new BufferedAudioPlayer(Tunnel.getResource("/tonnel_assets/music/きゅうくらりん.wav"), 1), 
-            2250, 
-            600_000,
-            2200,
-            1000
-        );
+        // var kyuukurarin = new Music(
+        //     new BufferedAudioPlayer(Tunnel.getResource("/tonnel_assets/music/きゅうくらりん.wav"), 1), 
+        //     2250, 
+        //     600_000,
+        //     2200,
+        //     1000
+        // );
 
         var lockstep = new Music(
             new BufferedAudioPlayer(Tunnel.getResource("/tonnel_assets/music/lockstep1.wav"), 1), 
