@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import javax.swing.JFrame;
 
-import canaryprism.audio.AudioPlayer;
+import canaryprism.audio.ClipAudioPlayer;
+import canaryprism.audio.BufferedAudioPlayer;
 import canaryprism.audio.Music;
 
 /**
@@ -25,14 +26,29 @@ public class Main {
 
     public static void main(String[] args) {
 
+        var kyuukurarin = new Music(
+            new BufferedAudioPlayer(Tunnel.getResource("/tonnel_assets/music/きゅうくらりん.wav"), 1), 
+            2250, 
+            600_000,
+            2200,
+            1000
+        );
+
+        var lockstep = new Music(
+            new BufferedAudioPlayer(Tunnel.getResource("/tonnel_assets/music/lockstep1.wav"), 1), 
+            550, 
+            162, 
+            1000
+        );
+
         var intro = new Music(
-            new AudioPlayer(Tunnel.getResource("/tonnel_assets/music/tunnel_start.wav"), 1),
+            new ClipAudioPlayer(Tunnel.getResource("/tonnel_assets/music/tunnel_start.wav"), 1),
             740,
             102,
             8
         );
         var music = new Music(
-            new AudioPlayer(Tunnel.getResource("/tonnel_assets/music/tunnel.wav"), 2),
+            new BufferedAudioPlayer(Tunnel.getResource("/tonnel_assets/music/tunnel.wav"), 2),
             (long)(60_000d * 17.5 / 204) - 765,
             102,
             64
@@ -60,7 +76,9 @@ public class Main {
         var frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        var tunnel = new Tunnel(frame, intro, (long)(60_000d * 17.5 / 204) - 40, 8, music, "/tonnel_assets/sprites", "/tonnel_assets/audio");
+        final var intro_delay = (long)(60_000d * 17.5 / 204) - 40;
+
+        var tunnel = new Tunnel(frame, intro, intro_delay, 8, music, "/tonnel_assets/sprites", "/tonnel_assets/audio");
         tunnel.setHighScore(high_score);
         if (hasArg(args, "--auto")) {
             tunnel.setAuto(true);
