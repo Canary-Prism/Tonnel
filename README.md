@@ -36,6 +36,9 @@ This program uses Java 22 with preview features bc i'm weird like that
 
 ## Historical Changelog
 
+### 0.2.3
+- whoops
+
 ### 0.2.2
 - revamped audio system, audio can now change volume much nicelier
 - this also fixes timing issues
