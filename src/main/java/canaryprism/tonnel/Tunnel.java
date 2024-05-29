@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.swing.JFrame;
 
-import canaryprism.audio.AudioPlayer;
+import canaryprism.audio.ClipAudioPlayer;
 import canaryprism.audio.Music;
 import canaryprism.timing.Conductor;
 import canaryprism.tonnel.scoring.PlayerInputHandler;
@@ -19,14 +19,14 @@ public class Tunnel {
     private static final long barely_range = 210, hit_range = 120;
 
     private final Music first, music;
-    private final AudioPlayer normal_music, muffled_music;
+    // private final AudioPlayer normal_music, muffled_music;
     private final long first_millis;
 
 
     private final Conductor music_loop_conductor;
     private final Conductor conductor, score_conductor, tunnel_noise_conductor;
 
-    private final AudioPlayer cowbell, voice_one, voice_two, tunnel_noise;
+    private final ClipAudioPlayer cowbell, voice_one, voice_two, tunnel_noise;
 
     private final String sprite_path;
 
@@ -41,18 +41,20 @@ public class Tunnel {
         this.first_millis = first_millis;
         this.music = music;
 
-        this.normal_music = music.music();
-        this.muffled_music = normal_music.clone();
+        music.music().setVolume(.6f);
 
-        normal_music.setVolume(.6f);
-        muffled_music.setVolume(.3f);
+        // this.normal_music = music.music();
+        // this.muffled_music = normal_music.clone();
+
+        // normal_music.setVolume(.6f);
+        // muffled_music.setVolume(.3f);
 
         this.sprite_path = sprite_path;
 
-        this.cowbell = new AudioPlayer(Tunnel.getResource(audio_path + "/cowbell.wav"), 2);
-        this.voice_one = new AudioPlayer(Tunnel.getResource(audio_path + "/one.wav"), 2);
-        this.voice_two = new AudioPlayer(Tunnel.getResource(audio_path + "/two.wav"), 2);
-        this.tunnel_noise = new AudioPlayer(Tunnel.getResource(audio_path + "/tunnel.wav"), 2);
+        this.cowbell = new ClipAudioPlayer(Tunnel.getResource(audio_path + "/cowbell.wav"), 2);
+        this.voice_one = new ClipAudioPlayer(Tunnel.getResource(audio_path + "/one.wav"), 2);
+        this.voice_two = new ClipAudioPlayer(Tunnel.getResource(audio_path + "/two.wav"), 2);
+        this.tunnel_noise = new ClipAudioPlayer(Tunnel.getResource(audio_path + "/tunnel.wav"), 2);
 
         tunnel_noise.setVolume(.6f);
 
@@ -71,7 +73,7 @@ public class Tunnel {
         //     throw new RuntimeException(e);
         // }
 
-        this.conductor = new Conductor(60_000, music.bpm());
+        this.conductor = new Conductor(music.time(), music.beats());
         conductor.submit((e) -> {
             var i = e.beat();
 
@@ -118,17 +120,19 @@ public class Tunnel {
             switch (i) {
                 case 0 -> view.startScoreScroll(20);
                 case 1 -> score_conductor.start(0);
-                case 7 -> input_handler.start(Math.round(60_000d / music.bpm()));
             }
+            if (i + 1 == first_beats) 
+                input_handler.start(Math.round(((double)music.time()) / music.beats()));
         });
 
-        this.music_loop_conductor = new Conductor(60_000 * music.beatDuration(), music.bpm());
+        this.music_loop_conductor = new Conductor(music.time() * music.beatDuration(), music.beats());
         music_loop_conductor.submit((e) -> {
-            if (in_tunnel) {
-                muffled_music.play();
-            } else {
-                normal_music.play();
-            }
+            music.music().play();
+            // if (in_tunnel) {
+            //     muffled_music.play();
+            // } else {
+            //     normal_music.play();
+            // }
         });
 
     }
@@ -153,19 +157,21 @@ public class Tunnel {
     }
 
     private void exitTunnel() {
-        var frame = muffled_music.getFramePosition();
-        normal_music.play(frame);
-        muffled_music.stop();
+        // var frame = muffled_music.getFramePosition();
+        // normal_music.play(frame);
+        // muffled_music.stop();
         // tunnel_noise.setVolume(0);
+        music.music().setVolume(.6f);
         tunnel_noise.stop();
         tunnel_noise_conductor.stop();
         view.exitTunnel();
     }
 
     private void enterTunnel() {
-        var frame = normal_music.getFramePosition();
-        muffled_music.play(frame);
-        normal_music.stop();
+        // var frame = normal_music.getFramePosition();
+        // muffled_music.play(frame);
+        // normal_music.stop();
+        music.music().setVolume(.3f);
         tunnel_noise_conductor.start(30);
         // tunnel_noise.setVolume(1);
         view.enterTunnel();
@@ -206,7 +212,7 @@ public class Tunnel {
     }
 
     private void setup() {
-        input_handler = new PlayerInputHandler(this, 60_000, music.bpm(), barely_range, hit_range);
+        input_handler = new PlayerInputHandler(this, music.time(), music.beats(), barely_range, hit_range);
 
         view = new TunnelView(sprite_path);
         view.addKeyListener(new KeyListener() {
@@ -269,8 +275,9 @@ public class Tunnel {
 
         conductor.stop();
         music_loop_conductor.stop();
-        muffled_music.stop();
-        normal_music.stop();
+        music.music().stop();
+        // muffled_music.stop();
+        // normal_music.stop();
         tunnel_noise.stop();
         tunnel_noise_conductor.stop();
         score_conductor.stop();
